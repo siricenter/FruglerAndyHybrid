@@ -1,12 +1,14 @@
-package com.myfrugler.frugler;
+package com.myfrugler.frugler2;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -14,12 +16,16 @@ import android.webkit.WebView;
 
 import com.android.vending.billing.IInAppBillingService;
 
+import org.json.JSONObject;
+
 import quickconnect.family.json.JSONException;
+import quickconnect.family.json.JSONParser;
 import quickconnect.family.json.JSONUtilities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by lee on 10/21/15.
@@ -29,7 +35,8 @@ public class JavaScriptCommunication extends Activity {
     WebView containingWebView;
 
     IInAppBillingService mService;
-    ServiceConnection mServiceConn;
+    String inAppID = "com.myfrugler.frugler.monthly";
+    HybridActivity test = new HybridActivity();
 
 
     public JavaScriptCommunication(Activity theActivity, WebView containingWebView) {
@@ -74,26 +81,12 @@ public class JavaScriptCommunication extends Activity {
                     Log.d("DeBug - TestButton", (String)user.get("email"));
                     Log.d("DeBug - TestButton", (String)user.get("pass"));
 
-                    String inAppID = "android.replace.purchased";
-                    purchaseSub(inAppID); //TODO: replace this with our in-app product id
+                    test.purchaseSub();
 
                 }else if(command.equals("onload")){
-                    Log.d("DeBug - TestLoad","ONLOAD");
+                    Log.d("DeBug - TestLoad", "ONLOAD");
 
-                    mServiceConn = new ServiceConnection() {
-                        @Override
-                        public void onServiceDisconnected(ComponentName name) {
-                            mService = null;
-                        }
 
-                        @Override
-                        public void onServiceConnected(ComponentName name, IBinder service) {
-                            mService = IInAppBillingService.Stub.asInterface(service);
-                        }
-                    };
-
-                    bindService(new Intent("com.android.vending.billing.InAppBillingService.BIND"),
-                            mServiceConn, Context.BIND_AUTO_CREATE);
                 }
 
                 String asyncCallback = (String) message.get("callbackFunc");
@@ -131,33 +124,21 @@ public class JavaScriptCommunication extends Activity {
 
     // Payment Methods
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mServiceConn != null) {
-            unbindService(mServiceConn);
-        }
-    }
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        if (mServiceConn != null) {
+//            unbindService(mServiceConn);
+//        }
+//    }
+
+
 
     public void displayPurchase() {
         Log.d("DeBug - TestPurchase", "Purchased");
         onDestroy();
     }
 
-    public void purchaseSub(String inAppID) {
-        ArrayList skuList = new ArrayList();
-        skuList.add(inAppID);
-        Bundle querySkus = new Bundle();
-        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
-        Bundle skuDetails;
-//        try {
-//            skuDetails = mService.getSkuDetails(3, getPackageName(), "inapp", querySkus);
-//            int response = skuDetails.getInt("RESPONSE_CODE");
-//            if (response == 0) {
-//
-//            }
-//
-//        }
-    }
+
 
 }

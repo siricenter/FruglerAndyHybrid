@@ -1,4 +1,4 @@
-package com.myfrugler.frugler;
+package com.myfrugler.frugler2;
 
 import org.junit.Test;
 
