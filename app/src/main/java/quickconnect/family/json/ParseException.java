@@ -1,4 +1,4 @@
-package org.quickconnect.family.json;
+package quickconnect.family.json;
 /**
  * ParseException explains why and where the error occurs in source JSON text.
  * 

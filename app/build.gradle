@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "org.barney.lee.andyhybrid"
+        applicationId "com.myfrugler.frugler"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1

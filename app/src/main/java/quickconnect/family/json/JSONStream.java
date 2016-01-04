@@ -21,35 +21,13 @@
  
  
  */
-package org.quickconnect.family.json;
+package quickconnect.family.json;
 
-/**
- * @author lee
- *
- */
-public class JSONException extends Exception {
 
-	private static final long serialVersionUID = -9091548358671542859L;
-
-	/**
-	 * 
-	 */
-	public JSONException() {
-		// TODO Auto-generated constructor stub
+public class JSONStream{
+	protected JSONStreamProtector theProtector;
+	
+	public void setProtector(JSONStreamProtector aProtector){
+		theProtector = aProtector;
 	}
-
-	/**
-	 * @param arg0
-	 */
-	public JSONException(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-
-    public JSONException(String message, Throwable aThrowable){
-        super(message,aThrowable);
-    }
-
-
-
 }

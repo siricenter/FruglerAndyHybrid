@@ -21,7 +21,7 @@
  
   @author FangYidong<fangyidong@yahoo.com.cn>. Greatly modified by Lee S. Barney
  */
-package org.quickconnect.family.json;
+package quickconnect.family.json;
 
 import java.io.IOException;
 import java.io.Reader;

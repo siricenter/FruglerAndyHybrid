@@ -1,4 +1,4 @@
-package org.barney.lee.andyhybrid;
+package com.myfrugler.frugler;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -15,8 +14,8 @@ import android.webkit.WebView;
 
 import com.android.vending.billing.IInAppBillingService;
 
-import org.quickconnect.family.json.JSONException;
-import org.quickconnect.family.json.JSONUtilities;
+import quickconnect.family.json.JSONException;
+import quickconnect.family.json.JSONUtilities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -151,14 +150,14 @@ public class JavaScriptCommunication extends Activity {
         Bundle querySkus = new Bundle();
         querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
         Bundle skuDetails;
-        try {
-            skuDetails = mService.getSkuDetails(3, getPackageName(), "inapp", querySkus);
-            int response = skuDetails.getInt("RESPONSE_CODE");
-            if (response == 0) {
-
-            }
-
-        }
+//        try {
+//            skuDetails = mService.getSkuDetails(3, getPackageName(), "inapp", querySkus);
+//            int response = skuDetails.getInt("RESPONSE_CODE");
+//            if (response == 0) {
+//
+//            }
+//
+//        }
     }
 
 }

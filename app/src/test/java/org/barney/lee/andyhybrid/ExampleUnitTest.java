@@ -1,4 +1,4 @@
-package org.barney.lee.andyhybrid;
+package com.myfrugler.frugler;
 
 import org.junit.Test;
 
