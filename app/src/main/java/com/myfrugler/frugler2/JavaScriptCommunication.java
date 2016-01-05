@@ -35,13 +35,17 @@ public class JavaScriptCommunication extends Activity {
     WebView containingWebView;
 
     IInAppBillingService mService;
-    String inAppID = "com.myfrugler.frugler.monthly";
-    HybridActivity test = new HybridActivity();
-
+    String inAppID2 = "com.myfrugler.frugler.monthly";
+    String inAppID = "android.test.purchased";
 
     public JavaScriptCommunication(Activity theActivity, WebView containingWebView) {
         this.theActivity = theActivity;
         this.containingWebView = containingWebView;
+    }
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("DeBug - TestLoad", "ONLOAD");
     }
 
     /**
@@ -81,11 +85,26 @@ public class JavaScriptCommunication extends Activity {
                     Log.d("DeBug - TestButton", (String)user.get("email"));
                     Log.d("DeBug - TestButton", (String)user.get("pass"));
 
-                    test.purchaseSub();
+                    purchaseSub();
 
                 }else if(command.equals("onload")){
                     Log.d("DeBug - TestLoad", "ONLOAD");
 
+
+                    ServiceConnection mServiceConn = new ServiceConnection() {
+                        @Override
+                        public void onServiceDisconnected(ComponentName name) {
+                            mService = null;
+                        }
+
+                        @Override
+                        public void onServiceConnected(ComponentName name, IBinder service) {
+                            mService = IInAppBillingService.Stub.asInterface(service);
+                        }
+                    };
+
+                    bindService(new Intent("com.android.vending.billing.InAppBillingService.BIND"),
+                            mServiceConn, Context.BIND_AUTO_CREATE);
 
                 }
 
@@ -123,7 +142,7 @@ public class JavaScriptCommunication extends Activity {
     }
 
     // Payment Methods
-
+//
 //    @Override
 //    public void onDestroy() {
 //        super.onDestroy();
@@ -140,5 +159,34 @@ public class JavaScriptCommunication extends Activity {
     }
 
 
+    public void purchaseSub() {
+        ArrayList skuList = new ArrayList();
+        skuList.add(inAppID);
+        Bundle querySkus = new Bundle();
+        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+        Bundle skuDetails;
+        try {
+            skuDetails = mService.getSkuDetails(3, getPackageName(), "inapp", querySkus);
+            int response = skuDetails.getInt("RESPONSE_CODE");
+            if (response == 0) {
+                ArrayList<String> responseList = skuDetails.getStringArrayList("DETAILS_LIST");
 
+                for (String thisResponse : responseList) {
+                    JSONObject object = new JSONObject(thisResponse);
+                    String sku = object.getString("productId");
+                    String price = object.getString("price");
+                    if (sku.equals(inAppID)) {
+                        Log.d("DeBug - Product", "Price" + sku);
+                        Log.d("DeBug - Product", "Price" + price);
+                    }
+                }
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            Log.e("DeBug- ERROR", "unexpected exception", e);
+        }
+    }
 }
+
