@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
 
@@ -25,6 +26,10 @@ public class HybridActivity extends AppCompatActivity {
 
     WebView theWebView;
 
+    public static String PACKAGE_NAME;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +38,10 @@ public class HybridActivity extends AppCompatActivity {
         theWebView.addJavascriptInterface(new JavaScriptCommunication(this, theWebView), "native");
         theWebView.getSettings().setJavaScriptEnabled(true);
         theWebView.loadUrl("file:///android_asset/index.html");
+        PACKAGE_NAME = getPackageName();
+        System.out.println("PACKAGE_NAME: " + PACKAGE_NAME);
+
+
     }
 
     @Override
@@ -56,5 +65,4 @@ public class HybridActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 }

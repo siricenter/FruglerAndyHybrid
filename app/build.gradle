@@ -8,7 +8,7 @@ android {
         applicationId "com.myfrugler.frugler2"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
+        versionCode 6
         versionName "1.0"
     }
     buildTypes {
@@ -25,3 +25,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:design:23.1.0'
 }
+
