@@ -40,12 +40,12 @@
 
 	var displayError = function() {
 		for (var i = 0; i < 4; i++) {
-			document.querySelector(".req_fields")[i].style.visibility = "visible";
+			document.querySelectorAll(".req_fields")[i].style.display = "block";
 		}
 	}
 
 	function confirmPurchase() {
-		document.querySelector(".req_fields").style.visibility = "hidden";
+		document.querySelector(".req_fields").style.display = "none";
 		var message = ""
 		var username = document.querySelector("#username").value
 		var email = document.querySelector("#email").value
@@ -74,13 +74,13 @@
 			} else {
 				message = {"cmd":"errorMsg", "msg":"Passwords do not match"}
 				document.querySelector("#login_error").innerText = "* Passwords do not match"
-//				document.querySelector(".req_fields").style.visibility = "visible"
+//				document.querySelector(".req_fields").style.display = "block"
 				displayError()
 			}
 		} else {
 			message = {"cmd":"errorMsg", "msg":"Required fields must be entered"}
 			document.querySelector("#login_error").innerText = "* Required fields must be entered"
-//			document.querySelector(".req_fields").style.visibility = "visible"
+//			document.querySelector(".req_fields").style.display = "block"
 			displayError()
 		}
 		var messageAsString = JSON.stringify(message)

@@ -1,10 +1,140 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/* ========== End Reset CSS ============== */
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(#2660AD, #A5D2F1);
+}
 h1{
-	color:red;
+  font-size: 4em;
+  color:#CCCCCC;
+  line-height: 1.8em;
+}
+#trial-text {
+  color: white;
+  margin-bottom: 30px;
+}
+input {
+  background: none;
+  border: none;
+  border-bottom: 2px solid #143756;
+  line-height: 1.8em;
+  margin-bottom: 15px;
+  color: white;
+}
+input:focus {
+  outline: none;
+}
+::-webkit-input-placeholder { /* Safari, Chrome and Opera */
+  color: #125D8F;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  color: #125D8F;
+}
+
+::-moz-placeholder { /* Firefox 19+ */
+  color: #125D8F;
+}
+
+:-ms-input-placeholder { /* IE 10+ */
+  color: #125D8F;
+}
+
+::-ms-input-placeholder { /* Edge */
+  color: #125D8F;
+}
+
+:placeholder-shown { /* Standard one last! */
+  color: #125D8F;
+}
+#pricing {
+  margin-top: 25px;
+  margin-bottom: 15px;
+  color: #143756;
+  font-size: 1.2em;
+}
+#purchase-btn {
+  color: black;
+  box-shadow: 5px 5px 5px rgba(130,125,130,0.3);;
+  -webkit-box-shadow: 5px 5px 5px 0px rgba(130,125,130,0.3);
+  -moz-box-shadow: 5px 5px 5px 0px rgba(130,125,130,0.3);
+  background-color: #FFF;
+  border-radius: 2px;
+  padding: 15px;
+  font-size: 1.5em;
+  color: #2660AD;
+  font-weight: bold;
+  margin: 0 0 35px;
+}
+#small-btn-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.small-btn {
+  color: #143756;
+  border-bottom: 1px solid #143756;
 }
 #login_error {
-	color:red;
+  color:red;
+  margin: 10px 0 15px;
+}
+.required {
+  display: flex;
+  flex-direction: row;
 }
 .req_fields {
-	color: red;
-	visibility: hidden;
+  color: red;
+  display: none;
 }

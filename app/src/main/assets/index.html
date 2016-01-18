@@ -20,20 +20,20 @@
 -->
 
 <h1>Register</h1>
-<p>7 day free trial!</p>
+<p id="trial-text">7 day free trial!</p>
 <div>
-    <div><span id="login_error"></span></div>
-    <div><span class="req_fields">* </span><input type="text" class="" id="username" placeholder="Username"></div>
-    <div><span class="req_fields">* </span><input type="email" class="" id="email" placeholder="Email"></div>
-    <div><span class="req_fields">* </span><input type="password" class="" id="password" placeholder="Password"></div>
-    <div><span class="req_fields">* </span><input type="password" class="" id="confirmPwd" placeholder="Confirm password"></div>
+    <div class="required"><span id="login_error"></span></div>
+    <div class="required"><span class="req_fields">* </span><input type="text" class="" id="username" placeholder="Username"></div>
+    <div class="required"><span class="req_fields">* </span><input type="email" class="" id="email" placeholder="Email"></div>
+    <div class="required"><span class="req_fields">* </span><input type="password" class="" id="password" placeholder="Password"></div>
+    <div class="required"><span class="req_fields">* </span><input type="password" class="" id="confirmPwd" placeholder="Confirm password"></div>
     <div><span class="req_fields">* - required field</span></div>
-    <div><span>Monthly <b>$4.99</b></span><br/></div>
-    <div><button type="button" onclick="return confirmPurchase()">Confirm Purchase</button></div>
-    <br />
-    <div><button type="button" onclick="restorePurchase()">Restore Purchases</button></div>
-    <br />
-    <div><button type="button" onclick="login()">Login</button></div>
+    <div id="pricing">Monthly $4.99</div>
+    <div id="purchase-btn" onclick="return confirmPurchase()">Confirm Purchase</div>
+    <div id="small-btn-wrapper">
+        <div class="small-btn" onclick="restorePurchase()">Restore Purchases</div>
+        <div class="small-btn" onclick="login()">Login</div>
+    </div>
 </div>
 <div id="test"></div>
 </body>
