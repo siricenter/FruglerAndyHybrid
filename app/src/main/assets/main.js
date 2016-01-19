@@ -47,18 +47,18 @@
 	function confirmPurchase() {
 		document.querySelector(".req_fields").style.display = "none";
 		var message = ""
-		var username = document.querySelector("#username").value
-		var email = document.querySelector("#email").value
+             var email = document.querySelector("#email").value
+		var confEmail = document.querySelector("#confEmail").value
 		var password = document.querySelector("#password").value
 		var confirmPwd = document.querySelector("#confirmPwd").value
 		// TODO: error handling for incorrect user input
 		//do a local pw confirm here
 		//if fails, don't continue
-		if (username && email && password && confirmPwd) {
-			if (confirmPwd == password) {
+		if (email && confEmail && password && confirmPwd) {
+			if (confirmPwd == password && confEmail == email) {
 				//{"name":username, "mail":email, "pass":password}
 
-				message = {"cmd":"requestMonthlyPurchase","userinfo":{"name":username, "email":email, "pass":password}, "callbackFunc":function(responseAsJSON){//responseAsJSON is what we you back from swift
+				message = {"cmd":"requestMonthlyPurchase","userinfo":{"email":email, "pass":password}, "callbackFunc":function(responseAsJSON){//responseAsJSON is what we you back from swift
 					var purchaseResponse = JSON.parse(responseAsJSON)
 					//document.querySelector("#messages_from_swift").innerText = "Count is "+purchaseResponse
 					//do ajax on success to setup user on PHP server
@@ -72,8 +72,8 @@
 					document.querySelector("#test").innerText = window.location
 				}.toString()}
 			} else {
-				message = {"cmd":"errorMsg", "msg":"Passwords do not match"}
-				document.querySelector("#login_error").innerText = "* Passwords do not match"
+				message = {"cmd":"errorMsg", "msg":"Email or passwords do not match"}
+				document.querySelector("#login_error").innerText = "* Email or passwords do not match"
 //				document.querySelector(".req_fields").style.display = "block"
 				displayError()
 			}
