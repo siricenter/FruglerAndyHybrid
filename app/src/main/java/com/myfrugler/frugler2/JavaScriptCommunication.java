@@ -272,7 +272,8 @@ public class JavaScriptCommunication extends HybridActivity{
                         System.out.println("Debug - Purchase State: " + purchaseState);
                         if (purchaseState == 0) {
                             // Change url to our url
-                            changeURL(theURL);
+                            // TODO: fix the call to our site
+//                            changeURL(theURL);
                         } else if (purchaseState == 1){
                             // Canceled
                             // Stay at current Registration url
