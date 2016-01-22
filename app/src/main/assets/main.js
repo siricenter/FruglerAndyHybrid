@@ -1,7 +1,21 @@
 
 	var clicks = 0
 
-	var theURL = "https://www.google.com/"
+	var theURL = 'https://www.google.com/'
+
+      // set the root domain location for development, stage, or production
+      var sysRoot = 'local'
+
+      var servicesRoot = ''
+      if (sysRoot == 'local') {
+        servicesRoot = 'http://localhost/f5admin/services/'
+      } else if (sysRoot == 'staging') {
+        servicesRoot = 'http://ec2-54-152-204-90.compute-1.amazonaws.com/services/'
+      } else if (sysRoot == 'prod') {
+        servicesRoot = 'https://www.f5admin.com/services/'
+      } else {
+        var rootError = 'Code location specified incorrectly'
+      }
 
 	function sendCount(){
 		/*toString MUST be called on the callbackFunc function object or the
@@ -47,7 +61,7 @@
 	function confirmPurchase() {
 		document.querySelector(".req_fields").style.display = "none";
 		var message = ""
-        var email = document.querySelector("#email").value
+             var email = document.querySelector("#email").value
 		var confEmail = document.querySelector("#confEmail").value
 		var password = document.querySelector("#password").value
 		var confirmPwd = document.querySelector("#confirmPwd").value
@@ -62,11 +76,36 @@
 					var purchaseResponse = JSON.parse(responseAsJSON)
 					//document.querySelector("#messages_from_swift").innerText = "Count is "+purchaseResponse
 
-					//do ajax on success to setup user on PHP server
+					// do ajax on success to setup user on PHP server
+                                var xhr = new XMLHttpRequest()
+                                var postUrl = servicesRoot + '/sec.php'
 
+                                // set up the stateChange callback
+                                xhr.onreadystatechange = function() {
+                                  if (xhr.readyState == 4 && xhr.status == 200) {
+                                    var acctcreateResponse = JSON.parse(xhr.responseText);
+                                    acctcreateCallback(acctcreateResponse);
+                                  }
+                                }
 
-//					replacePageWithURL(theURL)
-					// replacePageWithURL("http://ec2-54-152-204-90.compute-1.amazonaws.com/app/")
+                                xhr.open("POST", postUrl, true)
+                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+
+                               //TODO: find out what to put in place of the term variable for a month term.
+                               //TODO: Find out what to replace the "stripetoken" variable with.
+                               //TODO: Might need to wrap the call back in an actual function and only sent the function name
+                               xhr.send(JSON.stringify({"called":"sec",
+                                                                       "params":{
+                                                                          "sentdata":[{
+                                                                            "username": email,
+                                                                            "email": email,
+                                                                            "password": password,
+                                                                            "promocode":"",
+                                                                            "term": "some term",
+                                                                            "stripetoken": applegoogleToken ,
+                                                                            "req": "acctcreate"
+                                                                          }]}}))
+
 
 
 					//then reset the url of the webview to your php server
@@ -87,6 +126,15 @@
 		var messageAsString = JSON.stringify(message)
 		native.postMessage(messageAsString)
 	}
+
+      // callback function that runs after creating the user in sec.php
+      function acctcreateCallback(data) {
+        // body of the callback after user has been created
+        //TODO: check the data object returned from sec.php to see if everything went well
+
+        // if everything is good send the user on to the app webview
+        // replacePageWithURL("http://ec2-54-152-204-90.compute-1.amazonaws.com/app/")
+      }
 
 	function replacePageWithURL(aURL){
     	if(aURL){
