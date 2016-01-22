@@ -47,7 +47,7 @@
 	function confirmPurchase() {
 		document.querySelector(".req_fields").style.display = "none";
 		var message = ""
-             var email = document.querySelector("#email").value
+        var email = document.querySelector("#email").value
 		var confEmail = document.querySelector("#confEmail").value
 		var password = document.querySelector("#password").value
 		var confirmPwd = document.querySelector("#confirmPwd").value
@@ -61,10 +61,11 @@
 				message = {"cmd":"requestMonthlyPurchase","userinfo":{"email":email, "pass":password}, "callbackFunc":function(responseAsJSON){//responseAsJSON is what we you back from swift
 					var purchaseResponse = JSON.parse(responseAsJSON)
 					//document.querySelector("#messages_from_swift").innerText = "Count is "+purchaseResponse
+
 					//do ajax on success to setup user on PHP server
 
 
-					replacePageWithURL(theURL)
+//					replacePageWithURL(theURL)
 					// replacePageWithURL("http://ec2-54-152-204-90.compute-1.amazonaws.com/app/")
 
 

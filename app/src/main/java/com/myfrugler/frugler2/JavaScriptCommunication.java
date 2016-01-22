@@ -41,12 +41,17 @@ public class JavaScriptCommunication extends HybridActivity{
     IInAppBillingService mService;
     ServiceConnection mServiceConn;
 
+    String theURL = "https://www.google.com/";
+    String nativeURL = "file:///android_asset/index.html";
+
     String subID = "com.myfrugler.frugler.monthly";
 //    String subID = "android.test.purchased";
 
     public JavaScriptCommunication(Activity theActivity, WebView containingWebView) {
         this.theActivity = theActivity;
         this.containingWebView = containingWebView;
+
+        changeURL(nativeURL);
 
         mServiceConn = new ServiceConnection() {
             @Override
@@ -96,7 +101,7 @@ public class JavaScriptCommunication extends HybridActivity{
                     // Handle user info stuff here
                     Log.d("TestButton", "Hello");
                     HashMap<String, Object> user = (HashMap)message.get("userinfo");
-                    Log.d("DeBug - TestButton", (String) user.get("name"));
+//                    Log.d("DeBug - TestButton", (String) user.get("name"));
                     Log.d("DeBug - TestButton", (String)user.get("email"));
                     Log.d("DeBug - TestButton", (String) user.get("pass"));
 
@@ -106,67 +111,17 @@ public class JavaScriptCommunication extends HybridActivity{
                         System.out.println("ERROR: " + e);
                     }
 
-                } else if(command.equals("onload")){
+                } else if (command.equals("onload")){
                     Log.d("DeBug - TestLoad", "ONLOAD");
 
-                    try {
-                        HashMap<String,String> dataMap = new HashMap<>();
-                        Bundle ownedItems = mService.getPurchases(3, theActivity.getPackageName(), "subs", null);
-                        System.out.println("ownedItems: " + ownedItems);
-                        int ownedResponse = ownedItems.getInt("RESPONSE_CODE");
-                        System.out.println("ownedResponse: " + ownedResponse);
-                        if (ownedResponse == 0) {
-                            ArrayList ownedSkus =
-                                    ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-                            ArrayList purchaseDataList =
-                                    ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-                            ArrayList signatureList =
-                                    ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE");
-                            String continuationToken =
-                                    ownedItems.getString("INAPP_CONTINUATION_TOKEN");
-
-                            System.out.println("continuationToken: " + continuationToken);
-                            System.out.println("purchaseDataList.size: " + purchaseDataList.size());
-                            for (int i = 0; i < purchaseDataList.size(); ++i) {
-                                System.out.println("getPurchases() - \"INAPP_PURCHASE_ITEM_LIST\" return " + (ownedSkus != null ? ownedSkus.get(i) : "null"));
-                                System.out.println("getPurchases() - \"INAPP_PURCHASE_DATA_LIST\" return " + purchaseDataList.toString());
-                                System.out.println("getPurchases() - \"INAPP_DATA_SIGNATURE\" return " + (signatureList != null ? signatureList.toString() : "null"));
-                                System.out.println("getPurchases() - \"INAPP_CONTINUATION_TOKEN\" return " + (continuationToken != null ? continuationToken : "null"));
-                                String itemSub = (String) (ownedSkus != null ? ownedSkus.get(i) : null);
-                                System.out.println("this: " + Objects.equals(itemSub, subID));
-                                if (Objects.equals(itemSub, subID)) {
-//                                    continuationToken = "apples";
-                                    response = (continuationToken != null ? continuationToken : null);
-                                    System.out.print("response: " + response);
-                                    dataMap.put("token", response != null ? response.toString() : null);
-                                    response = dataMap;
-                                }
-//                                dataMap.put("token", "Apples!!!");
-//                                response = dataMap;
-                            }
-                        } else {
-                            dataMap.put("token", null);
-                            response = dataMap;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    autoLogin();
                 } else if (command.equals("errorMsg")) {
                     String display = (String)message.get("msg");
                     System.out.println("ERROR MESSAGE: " + display);
                     Toast.makeText(theActivity, display, Toast.LENGTH_SHORT).show();
                 } else if(command.equals("load_page")){
                     final String theURL = (String)message.get("url");
-                    if(theURL != null && theURL.trim().length() != 0){
-                        final WebView theWebView = this.containingWebView;
-                        this.containingWebView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                theWebView.loadUrl(theURL);
-                            }
-                        });
-
-                    }
+                    changeURL(theURL);
                 }
 
                 String asyncCallback = (String) message.get("callbackFunc");
@@ -179,6 +134,19 @@ public class JavaScriptCommunication extends HybridActivity{
         }
     }
 
+    public void changeURL(final String theURL) {
+        System.out.println("Debug - Changing url to " + theURL);
+        if(theURL != null && theURL.trim().length() != 0){
+            final WebView theWebView = this.containingWebView;
+            this.containingWebView.post(new Runnable() {
+                @Override
+                public void run() {
+                    theWebView.loadUrl(theURL);
+                }
+            });
+
+        }
+    }
 
     /**
      *
@@ -266,8 +234,63 @@ public class JavaScriptCommunication extends HybridActivity{
         }
     }
 
-    public void login() {
+    public void autoLogin() {
+        try {
+            System.out.println("Debug - AutoLogin Method");
+            // Make the call to play store
+            Bundle ownedItems = mService.getPurchases(3, theActivity.getPackageName(), "subs", null);
 
+            System.out.println("ownedItems: " + ownedItems);
+            int ownedResponse = ownedItems.getInt("RESPONSE_CODE");
+            System.out.println("ownedResponse: " + ownedResponse);
+            if (ownedResponse == 0) {
+                ArrayList ownedSkus = ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+                ArrayList purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+                ArrayList signatureList = ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE");
+                String continuationToken = ownedItems.getString("INAPP_CONTINUATION_TOKEN");
+
+                System.out.println("continuationToken: " + continuationToken);
+                System.out.println("purchaseDataList.size: " + purchaseDataList.size());
+                for (int i = 0; i < purchaseDataList.size(); ++i) {
+
+                    // Debug - Check values
+                    System.out.println("getPurchases() - \"INAPP_PURCHASE_ITEM_LIST\" return " + (ownedSkus != null ? ownedSkus.get(i) : "null"));
+                    System.out.println("getPurchases() - \"INAPP_PURCHASE_DATA_LIST\" return " + purchaseDataList.toString());
+                    System.out.println("getPurchases() - \"INAPP_DATA_SIGNATURE\" return " + (signatureList != null ? signatureList.toString() : "null"));
+                    System.out.println("getPurchases() - \"INAPP_CONTINUATION_TOKEN\" return " + (continuationToken != null ? continuationToken : "null"));
+
+                    String itemSub = (String) (ownedSkus != null ? ownedSkus.get(i) : null);
+                    System.out.println("this: " + Objects.equals(itemSub, subID));
+
+                    // Check if play store product matches our product
+                    if (Objects.equals(itemSub, subID)) {
+//                        continuationToken = "apples";
+                        // check if continuationToken is valid
+                        String purchaseData = purchaseDataList.get(i).toString();
+                        JSONObject purchaseStateOBJ = new JSONObject(purchaseData);
+                        int purchaseState = purchaseStateOBJ.getInt("purchaseState");
+                        System.out.println("Debug - Purchase State: " + purchaseState);
+                        if (purchaseState == 0) {
+                            // Change url to our url
+                            changeURL(theURL);
+                        } else if (purchaseState == 1){
+                            // Canceled
+                            // Stay at current Registration url
+                        } else {
+                            // Refunded
+                            // Stay at current Registration url
+                        }
+                    }
+                }
+            } else {
+                System.out.println("Debug - Cannot connect to Play Store");
+                // Stay at current Registration url
+            }
+        } catch (Exception e) {
+            System.out.println("Debug - Failed to Connect, exception caught");
+            e.printStackTrace();
+            // Stay at current Registration url
+        }
     }
 
     @Override
@@ -280,10 +303,16 @@ public class JavaScriptCommunication extends HybridActivity{
                     JSONObject jo = new JSONObject(purchaseData);
                     String sku = jo.getString(subID);
 
-                    System.out.print("You have bought the " + sku + ".");
+                    System.out.print("You subscribed to " + sku + "!");
+
+                    // After purchase change the url to our url
+                    changeURL(theURL);
+
                 } catch (org.json.JSONException e) {
                     e.printStackTrace();
                 }
+            } else {
+                System.out.println("Sub purchase failed. :(");
             }
         }
     }
