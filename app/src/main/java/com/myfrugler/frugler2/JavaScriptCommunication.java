@@ -65,7 +65,12 @@ public class JavaScriptCommunication extends HybridActivity{
             }
         };
         Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+
+        //TODO: Possible fix found @ http://stackoverflow.com/questions/24480069/google-in-app-billing-illegalargumentexception-service-intent-must-be-explicit
+        intent.setPackage("com.android.vending");
+
         theActivity.bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+        //TODO: I think we need to unbind this at some point. See "onDestroy" @ http://developer.android.com/google/play/billing/billing_integrate.html
     }
 
     /**

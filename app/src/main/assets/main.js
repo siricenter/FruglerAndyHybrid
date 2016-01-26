@@ -76,7 +76,7 @@
 					var purchaseResponse = JSON.parse(responseAsJSON)
 					//document.querySelector("#messages_from_swift").innerText = "Count is "+purchaseResponse
 
-					// do ajax on success to setup user on PHP server
+					// do ajax, on success setup user on PHP server
                                 var xhr = new XMLHttpRequest()
                                 var postUrl = servicesRoot + '/sec.php'
 
@@ -101,14 +101,11 @@
                                                                             "email": email,
                                                                             "password": password,
                                                                             "promocode":"",
-                                                                            "term": "some term",
+                                                                            "term": "1",
                                                                             "stripetoken": applegoogleToken ,
                                                                             "req": "acctcreate"
                                                                           }]}}))
 
-
-
-					//then reset the url of the webview to your php server
 					document.querySelector("#test").innerText = window.location
 				}.toString()}
 			} else {
