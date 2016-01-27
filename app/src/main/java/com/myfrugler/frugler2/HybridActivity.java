@@ -37,6 +37,7 @@ public class HybridActivity extends AppCompatActivity {
         theWebView = (WebView) findViewById(R.id.theWebView);
         theWebView.addJavascriptInterface(new JavaScriptCommunication(this, theWebView), "native");
         theWebView.getSettings().setJavaScriptEnabled(true);
+        theWebView.getSettings().setDomStorageEnabled(true);
 //        theWebView.loadUrl("file:///android_asset/index.html");
 //        theWebView.loadUrl("https://www.google.com/");
         PACKAGE_NAME = getPackageName();
