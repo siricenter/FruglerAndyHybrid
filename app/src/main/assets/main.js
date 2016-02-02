@@ -1,6 +1,7 @@
 
 	var clicks = 0
 
+	var theURL = 'http://ec2-54-152-204-90.compute-1.amazonaws.com'
 	var theURL = 'https://www.google.com/'
 
       // set the root domain location for development, stage, or production
@@ -40,12 +41,12 @@
 		// get the sub information from Google Play
 		var message = {"cmd":"onload", "callbackFunc":function(responseAsJSON){
 
-                var response = JSON.parse(responseAsJSON)
-                var token = (response['token'] != null ? "isNotNull" : null)
-                document.getElementById("test").innerText = response['token']
-                if (token != null) {
-    				replacePageWithURL(theURL)
-                }
+//                var response = JSON.parse(responseAsJSON)
+//                var token = (response['token'] != null ? "isNotNull" : null)
+//                document.getElementById("test").innerText = response['token']
+//                if (token != null) {
+//    				replacePageWithURL(theURL)
+//                }
 			}.toString()
 		}
 		var messageAsString = JSON.stringify(message)
@@ -73,40 +74,43 @@
 				//{"name":username, "mail":email, "pass":password}
 
 				message = {"cmd":"requestMonthlyPurchase","userinfo":{"email":email, "pass":password}, "callbackFunc":function(responseAsJSON){//responseAsJSON is what we you back from swift
-					var purchaseResponse = JSON.parse(responseAsJSON)
-					//document.querySelector("#messages_from_swift").innerText = "Count is "+purchaseResponse
+                    var purchaseResponse = JSON.parse(responseAsJSON)
+                    //document.querySelector("#messages_from_swift").innerText = "Count is "+purchaseResponse
 
-					// do ajax, on success setup user on PHP server
-                                var xhr = new XMLHttpRequest()
-                                var postUrl = servicesRoot + '/sec.php'
+                    // do ajax, on success setup user on PHP server
+                    var xhr = new XMLHttpRequest()
+                    var postUrl = servicesRoot + '/sec.php'
 
-                                // set up the stateChange callback
-                                xhr.onreadystatechange = function() {
-                                  if (xhr.readyState == 4 && xhr.status == 200) {
-                                    var acctcreateResponse = JSON.parse(xhr.responseText);
-                                    acctcreateCallback(acctcreateResponse);
-                                  }
-                                }
+                    // set up the stateChange callback
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            var acctcreateResponse = JSON.parse(xhr.responseText);
+                            acctcreateCallback(acctcreateResponse);
+                        }
+                    }
 
-                                xhr.open("POST", postUrl, true)
-                                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+                    xhr.open("POST", postUrl, true)
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
 
-                               //TODO: find out what to put in place of the term variable for a month term.
-                               //TODO: Find out what to replace the "stripetoken" variable with.
-                               //TODO: Might need to wrap the call back in an actual function and only sent the function name
-                               xhr.send(JSON.stringify({"called":"sec",
-                                                                       "params":{
-                                                                          "sentdata":[{
-                                                                            "username": email,
-                                                                            "email": email,
-                                                                            "password": password,
-                                                                            "promocode":"",
-                                                                            "term": "1",
-                                                                            "stripetoken": applegoogleToken ,
-                                                                            "req": "acctcreate"
-                                                                          }]}}))
+                    //TODO: find out what to put in place of the term variable for a month term.
+                    //TODO: Find out what to replace the "stripetoken" variable with.
+                    //TODO: Might need to wrap the call back in an actual function and only sent the function name
+                    xhr.send(JSON.stringify({"called":"sec",
+                                                       "params":{
+                                                          "sentdata":[{
+                                                            "username": email,
+                                                            "email": email,
+                                                            "password": password,
+                                                            "promocode":"",
+                                                            "term": "1",
+                                                            "stripetoken": applegoogleToken ,
+                                                            "req": "acctcreate"
+                                                          }]}}))
 
-					document.querySelector("#test").innerText = window.location
+
+
+                        document.querySelector("#test").innerText = window.location
+                        replacePageWithURL(theURL)
 				}.toString()}
 			} else {
 				message = {"cmd":"errorMsg", "msg":"Email or passwords do not match"}
@@ -139,10 +143,9 @@
     			var loadMessage = {"cmd":"load_page","url":aURL}
     			var messageAsString = JSON.stringify(loadMessage)
     			native.postMessage(messageAsString)
-    		  }
-    		  else{
+    		} else{
     			window.location = aURL
-    		  }
+    		}
     	}
     }
 

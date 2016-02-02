@@ -67,4 +67,36 @@ public class HybridActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 1001) {
+//            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+//
+//            if (resultCode == RESULT_OK) {
+//                try {
+//                    JSONObject jo = new JSONObject(purchaseData);
+//                    String sku = jo.getString("com.myfrugler.frugler2.monthly");
+//
+//                    System.out.print("You subscribed to " + sku + "!");
+//
+//                    // After purchase change the url to our url
+////                    changeURL(theURL);
+//
+//                } catch (org.json.JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                System.out.println("Sub purchase failed. :(");
+//            }
+//        }
+//    }
+
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        if (connection != null) {
+//            unbindService(connection);
+//        }
+//    }
 }

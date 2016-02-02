@@ -75,6 +75,7 @@ public class JavaScriptCommunication extends HybridActivity{
 
         theActivity.bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
         //TODO: I think we need to unbind this at some point. See "onDestroy" @ http://developer.android.com/google/play/billing/billing_integrate.html
+
     }
 
     /**
@@ -119,11 +120,11 @@ public class JavaScriptCommunication extends HybridActivity{
                     } catch (Exception e) {
                         System.out.println("ERROR: " + e);
                     }
-
+                    response = 0;
                 } else if (command.equals("onload")){
                     Log.d("DeBug - TestLoad", "ONLOAD");
 
-                    autoLogin();
+//                    autoLogin();
                 } else if (command.equals("errorMsg")) {
                     String display = (String)message.get("msg");
                     System.out.println("ERROR MESSAGE: " + display);
@@ -303,30 +304,37 @@ public class JavaScriptCommunication extends HybridActivity{
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1001) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-
-            if (resultCode == RESULT_OK) {
-                try {
-                    JSONObject jo = new JSONObject(purchaseData);
-                    String sku = jo.getString(subID);
-
-                    System.out.print("You subscribed to " + sku + "!");
-
-                    // After purchase change the url to our url
-                    changeURL(theURL);
-
-                } catch (org.json.JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                System.out.println("Sub purchase failed. :(");
-            }
-        }
-    }
-
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 1001) {
+//            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+//
+//            if (resultCode == RESULT_OK) {
+//                try {
+//                    JSONObject jo = new JSONObject(purchaseData);
+//                    String sku = jo.getString(subID);
+//
+//                    System.out.print("You subscribed to " + sku + "!");
+//
+//                    // After purchase change the url to our url
+//                    changeURL(theURL);
+//
+//                } catch (org.json.JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                System.out.println("Sub purchase failed. :(");
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        if (connection != null) {
+//            unbindService(connection);
+//        }
+//    }
 
 }
 
