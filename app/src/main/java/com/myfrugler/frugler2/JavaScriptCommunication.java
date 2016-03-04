@@ -41,6 +41,11 @@ public class JavaScriptCommunication extends HybridActivity{
     IInAppBillingService mService;
     ServiceConnection mServiceConn;
 
+    String purchaseError = "false";
+    String email = "";
+    String ePass = "";
+
+    String google = "https://www.google.com/";
     String theURL = "http://ec2-54-152-204-90.compute-1.amazonaws.com/app/";
     String nativeURL = "file:///android_asset/index.html";
 
@@ -110,21 +115,33 @@ public class JavaScriptCommunication extends HybridActivity{
                 }else if (command.equals("requestMonthlyPurchase")){
                     // Handle user info stuff here
                     Log.d("TestButton", "Hello");
-                    HashMap<String, Object> user = (HashMap)message.get("userinfo");
-//                    Log.d("DeBug - TestButton", (String) user.get("name"));
-                    Log.d("DeBug - TestButton", (String)user.get("email"));
-                    Log.d("DeBug - TestButton", (String) user.get("pass"));
+                    email = (String)message.get("email");
+                    ePass = (String)message.get("ePass");
+                    Log.d("DeBug - TestButton", email);
+                    Log.d("DeBug - TestButton", ePass);
+                    HashMap<String,Object> dataMap = new HashMap<>();
+                    dataMap.put("user_email", email);
+                    dataMap.put("ePass", ePass);
+                    response = dataMap;
+
+//                    HashMap<String, Object> user = (HashMap)message.get("userinfo");
+////                    Log.d("DeBug - TestButton", (String) user.get("name"));
+//                    Log.d("DeBug - TestButton", (String)user.get("email"));
+//                    Log.d("DeBug - TestButton", (String) user.get("pass"));
 
                     try {
                         purchaseSub();
                     } catch (Exception e) {
                         System.out.println("ERROR: " + e);
                     }
-                    response = 0;
+//                    response = 0;
                 } else if (command.equals("onload")){
                     Log.d("DeBug - TestLoad", "ONLOAD");
 
-//                    autoLogin();
+                    HashMap<String,Object> dataMap = new HashMap<>();
+                    dataMap.put("purchaseError", purchaseError);
+                    dataMap.put("user_email", email);
+                    response = dataMap;
                 } else if (command.equals("errorMsg")) {
                     String display = (String)message.get("msg");
                     System.out.println("ERROR MESSAGE: " + display);
@@ -132,6 +149,9 @@ public class JavaScriptCommunication extends HybridActivity{
                 } else if(command.equals("load_page")){
                     final String theURL = (String)message.get("url");
                     changeURL(theURL);
+                } else if(command.equals("log")) {
+                    String display = (String)message.get("string");
+                    System.out.println("JS: " + display);
                 }
 
                 String asyncCallback = (String) message.get("callbackFunc");
@@ -217,6 +237,8 @@ public class JavaScriptCommunication extends HybridActivity{
                     System.out.println("sku = subID" + sku.equals(subID));
 
                     if (sku.equals(subID)) {
+                        purchaseError = "false";
+
                         System.out.println("DeBug - Product sku:   " + sku);
                         System.out.println("DeBug - Product Price: " + price);
 
@@ -236,11 +258,17 @@ public class JavaScriptCommunication extends HybridActivity{
                                 Integer.valueOf(0), Integer.valueOf(0));
                     }
                 }
+            } else {
+                System.out.println("DeBug - ERROR: Cannot connect to google servers.");
+                purchaseError = "true";
+                changeURL(nativeURL);
             }
 
         } catch (Exception e) {
-            Log.e("DeBug- ERROR", "unexpected exception", e);
+            Log.e("DeBug - ERROR", "unexpected exception", e);
             e.printStackTrace();
+            purchaseError = "true";
+            changeURL(nativeURL);
         }
     }
 
@@ -283,24 +311,34 @@ public class JavaScriptCommunication extends HybridActivity{
                         if (purchaseState == 0) {
                             // Change url to our url
                             // TODO: fix the call to our site
-                            changeURL(theURL);
-                        } else if (purchaseState == 1){
+                            purchaseError = "false";
+                            changeURL(theURL + "?email=\'" + email + "\'&password=\'" + ePass + "\'");
+//                            changeURL(google);
+                        } else if (purchaseState == 1) {
                             // Canceled
+                            purchaseError = "true";
                             // Stay at current Registration url
+                            changeURL(nativeURL);
                         } else {
                             // Refunded
+                            purchaseError = "true";
                             // Stay at current Registration url
+                            changeURL(nativeURL);
                         }
                     }
                 }
             } else {
                 System.out.println("Debug - Cannot connect to Play Store");
                 // Stay at current Registration url
+                purchaseError = "true";
+                changeURL(nativeURL);
             }
         } catch (Exception e) {
             System.out.println("Debug - Failed to Connect, exception caught");
             e.printStackTrace();
             // Stay at current Registration url
+            purchaseError = "true";
+            changeURL(nativeURL);
         }
     }
 

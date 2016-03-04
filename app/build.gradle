@@ -8,8 +8,8 @@ android {
         applicationId "com.myfrugler.frugler2"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 10
-        versionName "10.0"
+        versionCode 11
+        versionName "11.0"
     }
     buildTypes {
         release {
