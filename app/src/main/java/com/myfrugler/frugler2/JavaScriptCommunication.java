@@ -256,6 +256,8 @@ public class JavaScriptCommunication extends HybridActivity{
                         theActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
                                 new Intent(), Integer.valueOf(0),
                                 Integer.valueOf(0), Integer.valueOf(0));
+
+                        autoLogin();
                     }
                 }
             } else {
@@ -289,6 +291,10 @@ public class JavaScriptCommunication extends HybridActivity{
 
                 System.out.println("continuationToken: " + continuationToken);
                 System.out.println("purchaseDataList.size: " + purchaseDataList.size());
+
+                // If there was no product purchased throw error
+                if (purchaseDataList.size() < 1) throw new Exception("Error: no product purchased");
+
                 for (int i = 0; i < purchaseDataList.size(); ++i) {
 
                     // Debug - Check values
