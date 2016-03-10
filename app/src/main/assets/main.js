@@ -196,10 +196,10 @@ function confirmPurchase() {
                 message = {"cmd":"requestMonthlyPurchase", "email": email, "ePass": ePass, "callbackFunc":function(responseAsJSON){
                     // responseAsJSON is what we get back from swift
                     var response = JSON.parse(responseAsJSON)
-                    
+
                     var email = response['user_email']
                     var ePass = response['ePass']
-                    
+
                     message = {"cmd":"log", "string":"email = " + response['user_email'] + " password = " + response['ePass']}
                     messageAsString = JSON.stringify(message)
                     native.postMessage(messageAsString)
@@ -213,12 +213,13 @@ function confirmPurchase() {
                 }.toString()}
                 messageAsString = JSON.stringify(message)
                 native.postMessage(messageAsString)
+
             }, function() {
                 // handle the account creation fail
                 // Potential reasons: duplicate email
                 message = {"cmd":"log", "string":"User creation error"}
                 document.querySelector("#login_error").innerText = "* User creation error (email already in use)"
-                
+
                 purchaseBtn.style.display = "block"
                 processingBtn.style.display = "none"
             })
@@ -279,7 +280,7 @@ function createAccount(email, password, successCallback, failureCallback) {
                 messageAsString = JSON.stringify(message)
                 native.postMessage(messageAsString)
                 
-                message = {"cmd":"log", "string": "the URL: " + "http://ec2-54-152-204-90.compute-1.amazonaws.com/app/?email='" + email + "'&password=" + ePass + "'"	}
+                message = {"cmd":"log", "string": "createAccount URL: " + "http://ec2-54-152-204-90.compute-1.amazonaws.com/app/?email='" + email + "'&password=" + ePass + "'"	}
                 messageAsString = JSON.stringify(message)
                 native.postMessage(messageAsString)
 

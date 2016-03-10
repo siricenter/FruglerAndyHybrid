@@ -41,15 +41,15 @@ public class JavaScriptCommunication extends HybridActivity{
     IInAppBillingService mService;
     ServiceConnection mServiceConn;
 
-    String purchaseError = "false";
-    String email = "";
-    String ePass = "";
+    private String purchaseError = "false";
+    private String email = "";
+    private String ePass = "";
 
-    String google = "https://www.google.com/";
-    String theURL = "http://ec2-54-152-204-90.compute-1.amazonaws.com/app/";
-    String nativeURL = "file:///android_asset/index.html";
+//    String google = "https://www.google.com/";
+    private String theURL = "http://ec2-54-152-204-90.compute-1.amazonaws.com/app/";
+    private String nativeURL = "file:///android_asset/index.html";
 
-    String subID = "com.myfrugler.frugler.monthly";
+    private String subID = "com.myfrugler.frugler.monthly";
 //    String subID = "android.test.purchased";
 
     public JavaScriptCommunication() {
@@ -84,6 +84,30 @@ public class JavaScriptCommunication extends HybridActivity{
 
     }
 
+    public void setPurchaseError(Boolean isError) {
+        if (isError) {
+            purchaseError = "true";
+        } else {
+            purchaseError = "false";
+        }
+    }
+
+    public String getPurchaseError(){
+        return purchaseError;
+    }
+
+    public String getTheURL() {
+        return theURL;
+    }
+
+    public String getNativeURL() {
+        return nativeURL;
+    }
+
+    public String getUserURL() {
+        return theURL + "?email=\'" + email + "\'&password=\'" + ePass + "\'";
+    }
+
     /**
      *
      * @param aMessageAsJSON - the data and an indicator as to what Java code is to be executed.
@@ -115,7 +139,7 @@ public class JavaScriptCommunication extends HybridActivity{
                     response = dataMap;
                 }else if (command.equals("requestMonthlyPurchase")){
                     // Handle user info stuff here
-                    Log.d("TestButton", "Hello");
+                    Log.d("TestButton", "Java Side says Hello");
                     email = (String)message.get("email");
                     ePass = (String)message.get("ePass");
                     Log.d("DeBug - TestButton", email);
@@ -236,7 +260,7 @@ public class JavaScriptCommunication extends HybridActivity{
                     String sku = object.getString("productId");
                     String price = object.getString("price");
 
-                    System.out.println("sku = subID" + sku.equals(subID));
+                    System.out.println("sku = subID " + sku.equals(subID));
 
                     // check that the purchase equals "com.myfrugler.frugler.monthly"
                     if (sku.equals(subID)) {
@@ -260,9 +284,9 @@ public class JavaScriptCommunication extends HybridActivity{
                             System.out.println("pendingIntent: " + pendingIntent);
 
 //                                // TODO: check that this is getting called... should load www.google.com
-//                                theActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
-//                                        new Intent(), Integer.valueOf(0),
-//                                        Integer.valueOf(0), Integer.valueOf(0));
+                                this.theActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
+                                        new Intent(), Integer.valueOf(0),
+                                        Integer.valueOf(0), Integer.valueOf(0));
 
 //                                // TODO: check that this is getting called... should load our aws login screen
 //                                startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
@@ -270,7 +294,7 @@ public class JavaScriptCommunication extends HybridActivity{
 //                                        Integer.valueOf(0), Integer.valueOf(0));
 
                                 // TODO: check that this is getting called... should load our aws frugles page after login
-                                autoLogin();
+//                                autoLogin();
 
                         } else {
                             // ERROR making a purchase
@@ -396,29 +420,33 @@ public class JavaScriptCommunication extends HybridActivity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1001) {
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+        purchaseError = "false";
+        System.out.println("Debug - Check that onActivityResult is getting called");
+//        super.onActivityResult(requestCode, resultCode, data);
 
-            if (resultCode == RESULT_OK) {
-                try {
-                    JSONObject jo = new JSONObject(purchaseData);
-                    String sku = jo.getString(subID);
-
-                    System.out.print("You subscribed to " + sku + "!");
-
-                    // After purchase change the url to our url
-                    purchaseError = "false";
-                    changeURL(theURL);
-                } catch (org.json.JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                System.out.println("Sub purchase failed. :(");
-                // Stay at current Registration url
-                purchaseError = "true";
-                changeURL(nativeURL);
-            }
-        }
+//        if (requestCode == 1001) {
+//            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+//
+//            if (resultCode == RESULT_OK) {
+//                try {
+//                    JSONObject jo = new JSONObject(purchaseData);
+//                    String sku = jo.getString(subID);
+//
+//                    System.out.print("You subscribed to " + sku + "!");
+//
+//                    // After purchase change the url to our url
+//                    purchaseError = "false";
+//                    changeURL(theURL);
+//                } catch (org.json.JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                System.out.println("Sub purchase failed. :(");
+//                // Stay at current Registration url
+//                purchaseError = "true";
+//                changeURL(nativeURL);
+//            }
+//        }
     }
 
     @Override

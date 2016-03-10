@@ -28,14 +28,14 @@ public class HybridActivity extends AppCompatActivity {
 
     public static String PACKAGE_NAME;
 
-
+    JavaScriptCommunication jsc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hybrid);
         theWebView = (WebView) findViewById(R.id.theWebView);
-        theWebView.addJavascriptInterface(new JavaScriptCommunication(this, theWebView), "native");
+        theWebView.addJavascriptInterface(jsc = new JavaScriptCommunication(this, theWebView), "native");
         theWebView.getSettings().setJavaScriptEnabled(true);
         theWebView.getSettings().setDomStorageEnabled(true);
 //        theWebView.loadUrl("file:///android_asset/index.html");
@@ -70,6 +70,9 @@ public class HybridActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO: figure out how to put this into JavaScriptCommunication.java
+        System.out.println("Debug - Check that HybridActivity onActivityResult is called");
+//        .onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1001) {
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
 
@@ -81,17 +84,44 @@ public class HybridActivity extends AppCompatActivity {
                     System.out.print("You subscribed to " + sku + "!");
 
                     // After purchase change the url to our url
-//                    changeURL(theURL);
-                    theWebView.loadUrl("https://www.google.com/");
-
+                    jsc.setPurchaseError(false);
+                    System.out.println("Test purchaseError: " + jsc.getPurchaseError());
+                    jsc.changeURL(jsc.getUserURL());
                 } catch (org.json.JSONException e) {
                     e.printStackTrace();
                 }
             } else {
                 System.out.println("Sub purchase failed. :(");
+                // Stay at current Registration url
+                jsc.setPurchaseError(true);
+                System.out.println("Test purchaseError: " + jsc.getPurchaseError());
+                jsc.changeURL(jsc.getNativeURL());
             }
-        }
-    }
+       }
+
+//
+//        if (requestCode == 1001) {
+//            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+//
+//            if (resultCode == RESULT_OK) {
+//                try {
+//                    JSONObject jo = new JSONObject(purchaseData);
+//                    String sku = jo.getString("com.myfrugler.frugler2.monthly");
+//
+//                    System.out.print("You subscribed to " + sku + "!");
+//
+//                    // After purchase change the url to our url
+////                    changeURL(theURL);
+//                    theWebView.loadUrl("https://www.google.com/");
+//
+//                } catch (org.json.JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                System.out.println("Sub purchase failed. :(");
+//            }
+//        }
+//    }
 
 //    @Override
 //    public void onDestroy() {
@@ -99,5 +129,5 @@ public class HybridActivity extends AppCompatActivity {
 //        if (connection != null) {
 //            unbindService(connection);
 //        }
-//    }
+    }
 }
