@@ -79,20 +79,20 @@ public class HybridActivity extends AppCompatActivity {
             System.out.println("resultCode aonActivityResult: " + resultCode);
             System.out.println("resultCode aonActivityResult: " + RESULT_OK);
             if (resultCode == RESULT_OK) {
-                    System.out.print("You subscribed to com.myfrugler.frugler2.monthly!");
+                System.out.print("You subscribed to com.myfrugler.frugler2.monthly!");
 
-                    // After purchase change the url to our url
-                    jsc.setPurchaseError(false);
-                    System.out.println("Test purchaseError: " + jsc.getPurchaseError());
-                    jsc.changeURL(jsc.getUserURL());
+                // After purchase change the url to our url
+                jsc.setPurchaseError(false);
+                System.out.println("Test purchaseError: " + jsc.getPurchaseError());
+                jsc.changeURL(jsc.getUserURL());
             } else {
-                    System.out.println("Sub purchase failed. :(");
-                    // Stay at current Registration url
-                    jsc.setPurchaseError(true);
-                    System.out.println("Test purchaseError: " + jsc.getPurchaseError());
-                    jsc.changeURL(jsc.getNativeURL());
+                System.out.println("Sub purchase failed. :(");
+                // Stay at current Registration url
+                jsc.setPurchaseError(true);
+                System.out.println("Test purchaseError: " + jsc.getPurchaseError());
+                jsc.changeURL(jsc.getNativeURL());
             }
-       }
+        }
 
 //
 //        if (requestCode == 1001) {
@@ -117,12 +117,13 @@ public class HybridActivity extends AppCompatActivity {
 //            }
 //        }
 //    }
+    }
 
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        if (connection != null) {
-//            unbindService(connection);
-//        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (jsc.getmService() != null) {
+            unbindService(jsc.getmServiceConn());
+        }
     }
 }

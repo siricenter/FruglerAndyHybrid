@@ -38,8 +38,8 @@ public class JavaScriptCommunication extends HybridActivity{
     Activity theActivity;
     WebView containingWebView;
 
-    IInAppBillingService mService;
-    ServiceConnection mServiceConn;
+    private IInAppBillingService mService;
+    private ServiceConnection mServiceConn;
 
     private String purchaseError = "false";
     private String email = "";
@@ -63,8 +63,7 @@ public class JavaScriptCommunication extends HybridActivity{
         this.containingWebView = containingWebView;
 
         // TODO: change autoLogin to log a user in or keep them on the registration screen
-//        autoLogin();
-        changeURL(nativeURL);
+//        changeURL(nativeURL);
 
         mServiceConn = new ServiceConnection() {
             @Override
@@ -75,6 +74,7 @@ public class JavaScriptCommunication extends HybridActivity{
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mService = IInAppBillingService.Stub.asInterface(service);
+                autoLogin();
             }
         };
 
@@ -110,6 +110,14 @@ public class JavaScriptCommunication extends HybridActivity{
 
     public String getUserURL() {
         return theURL + "?email=\'" + email + "\'&password=\'" + ePass + "\'";
+    }
+
+    public IInAppBillingService getmService() {
+        return mService;
+    }
+
+    public ServiceConnection getmServiceConn() {
+        return mServiceConn;
     }
 
     /**
@@ -368,7 +376,7 @@ public class JavaScriptCommunication extends HybridActivity{
 
                         // Check that the ownedSku is not null
                         String itemSub = (String) (ownedSkus != null ? ownedSkus.get(i) : null);
-                        System.out.println("this: " + Objects.equals(itemSub, subID));
+                        System.out.println("itemSub = subID: " + Objects.equals(itemSub, subID));
 
                         // Check if play store product matches our product
                         if (Objects.equals(itemSub, subID)) {
@@ -386,39 +394,37 @@ public class JavaScriptCommunication extends HybridActivity{
 //                            }
 
                             int purchaseState = purchaseStateOBJ.getInt("purchaseState");
-                                System.out.println("Debug - Purchase State: " + purchaseState);
-                                if (purchaseState == 0) {
-                                    // Change url to our url
-                                    // TODO: fix the call to our site
-                                    purchaseError = "false";
-                                    changeURL(theURL + "?email=\'" + email + "\'&password=\'" + ePass + "\'");
-                                } else if (purchaseState == 1) {
-                                    // Canceled
-//                                    purchaseError = "true";
-                                    // Stay at current Registration url
-                                    changeURL(nativeURL);
-                                } else {
-                                    // Refunded
-//                                    purchaseError = "true";
-                                    // Stay at current Registration url
-                                    changeURL(nativeURL);
+                            System.out.println("Debug - Purchase State: " + purchaseState);
+                            if (purchaseState == 0) {
+                                // Purchased
+                                purchaseError = "false";
+                                changeURL(getTheURL());
+                            } else if (purchaseState == 1) {
+                                // Canceled
+                                throw new Exception("Error: Subscription Canceled");
+                            } else {
+                                // Refunded
+                                throw new Exception("Error: Subscription Refunded");
                             }
+                        } else {
+                            // item sku does not match the purchased sku (this should never happen as we only have one purchase item)
+                            throw new Exception("Error: Purchased product doesn't match");
                         }
                     }
                 } else {
+                    // There have been no products purchased
                     throw new Exception("Error: No products purchased");
                 }
             } else {
-                System.out.println("Debug - Cannot connect to Play Store");
-                // Stay at current Registration url
-//                purchaseError = "true";
-                changeURL(nativeURL);
+                // We could not connect to the Play Store so keep us on the registration screen.
+                // TODO: if the user has purchased, but they cannot connect to the play store this my pose a problem as it will keep them on the registration screen...
+                throw new Exception("Debug - Cannot connect to Play Store");
             }
         } catch (Exception e) {
+            // Error handler if there was any problem trying to load our system.
             System.out.println("Debug - Failed to Connect, exception caught");
             e.printStackTrace();
             // Stay at current Registration url
-//            purchaseError = "true";
             changeURL(nativeURL);
         }
     }
