@@ -50,7 +50,9 @@ public class JavaScriptCommunication extends HybridActivity{
     private String nativeURL = "file:///android_asset/index.html";
 
     private String subID = "com.myfrugler.frugler.monthly";
-//    String subID = "android.test.purchased";
+//    private String subID = "android.test.purchased";
+//    private String subID = "android.test.canceled";
+//    private String subID = "android.test.item_unavailable";
 
     public JavaScriptCommunication() {
         // Intentionally left blank
@@ -60,6 +62,8 @@ public class JavaScriptCommunication extends HybridActivity{
         this.theActivity = theActivity;
         this.containingWebView = containingWebView;
 
+        // TODO: change autoLogin to log a user in or keep them on the registration screen
+//        autoLogin();
         changeURL(nativeURL);
 
         mServiceConn = new ServiceConnection() {
@@ -245,6 +249,7 @@ public class JavaScriptCommunication extends HybridActivity{
             System.out.println("getPackageName: " + theActivity.getPackageName());
 
             skuDetails = mService.getSkuDetails(3, theActivity.getPackageName(), "subs", querySkus);
+//            skuDetails = mService.getSkuDetails(3, theActivity.getPackageName(), "inapp", querySkus);
             System.out.println("skuDetails: " + skuDetails);
             int response = skuDetails.getInt("RESPONSE_CODE");
 
@@ -389,12 +394,12 @@ public class JavaScriptCommunication extends HybridActivity{
                                     changeURL(theURL + "?email=\'" + email + "\'&password=\'" + ePass + "\'");
                                 } else if (purchaseState == 1) {
                                     // Canceled
-                                    purchaseError = "true";
+//                                    purchaseError = "true";
                                     // Stay at current Registration url
                                     changeURL(nativeURL);
                                 } else {
                                     // Refunded
-                                    purchaseError = "true";
+//                                    purchaseError = "true";
                                     // Stay at current Registration url
                                     changeURL(nativeURL);
                             }
@@ -406,14 +411,14 @@ public class JavaScriptCommunication extends HybridActivity{
             } else {
                 System.out.println("Debug - Cannot connect to Play Store");
                 // Stay at current Registration url
-                purchaseError = "true";
+//                purchaseError = "true";
                 changeURL(nativeURL);
             }
         } catch (Exception e) {
             System.out.println("Debug - Failed to Connect, exception caught");
             e.printStackTrace();
             // Stay at current Registration url
-            purchaseError = "true";
+//            purchaseError = "true";
             changeURL(nativeURL);
         }
     }

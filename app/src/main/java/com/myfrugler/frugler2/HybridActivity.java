@@ -76,26 +76,21 @@ public class HybridActivity extends AppCompatActivity {
         if (requestCode == 1001) {
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
 
+            System.out.println("resultCode aonActivityResult: " + resultCode);
+            System.out.println("resultCode aonActivityResult: " + RESULT_OK);
             if (resultCode == RESULT_OK) {
-                try {
-                    JSONObject jo = new JSONObject(purchaseData);
-                    String sku = jo.getString("com.myfrugler.frugler2.monthly");
-
-                    System.out.print("You subscribed to " + sku + "!");
+                    System.out.print("You subscribed to com.myfrugler.frugler2.monthly!");
 
                     // After purchase change the url to our url
                     jsc.setPurchaseError(false);
                     System.out.println("Test purchaseError: " + jsc.getPurchaseError());
                     jsc.changeURL(jsc.getUserURL());
-                } catch (org.json.JSONException e) {
-                    e.printStackTrace();
-                }
             } else {
-                System.out.println("Sub purchase failed. :(");
-                // Stay at current Registration url
-                jsc.setPurchaseError(true);
-                System.out.println("Test purchaseError: " + jsc.getPurchaseError());
-                jsc.changeURL(jsc.getNativeURL());
+                    System.out.println("Sub purchase failed. :(");
+                    // Stay at current Registration url
+                    jsc.setPurchaseError(true);
+                    System.out.println("Test purchaseError: " + jsc.getPurchaseError());
+                    jsc.changeURL(jsc.getNativeURL());
             }
        }
 

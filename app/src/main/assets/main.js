@@ -74,7 +74,7 @@ window.onload = function() {
     var message = {"cmd":"onload", "callbackFunc":function(responseAsJSON){
         response = JSON.parse(responseAsJSON)
         
-        message = {"cmd":"log", "string":"JS purchaseERROR:" + response['purchaseError']}
+        message = {"cmd":"log", "string":"JS onLoad purchaseERROR: " + response['purchaseError']}
         messageAsString = JSON.stringify(message)
         native.postMessage(messageAsString)
         
