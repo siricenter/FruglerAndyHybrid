@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -22,14 +19,12 @@ import com.android.vending.billing.IInAppBillingService;
 import org.json.JSONObject;
 
 import quickconnect.family.json.JSONException;
-import quickconnect.family.json.JSONParser;
 import quickconnect.family.json.JSONUtilities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by lee on 10/21/15.
@@ -246,6 +241,7 @@ public class JavaScriptCommunication extends HybridActivity{
     }
 
     public void purchaseSub() {
+        boolean exists = false;
         ArrayList skuList = new ArrayList();
         skuList.add(subID);
         Bundle querySkus = new Bundle();
@@ -268,6 +264,7 @@ public class JavaScriptCommunication extends HybridActivity{
 
                 System.out.println("responseList: " + responseList);
 
+                // Check the purchase queue for the sku that we are trying to purchase
                 for (String thisResponse : responseList) {
                     JSONObject object = new JSONObject(thisResponse);
                     String sku = object.getString("productId");
@@ -277,6 +274,7 @@ public class JavaScriptCommunication extends HybridActivity{
 
                     // check that the purchase equals "com.myfrugler.frugler.monthly"
                     if (sku.equals(subID)) {
+                        exists = true;
                         purchaseError = "false";
 
                         System.out.println("DeBug - Product sku:   " + sku);
@@ -287,7 +285,8 @@ public class JavaScriptCommunication extends HybridActivity{
                                 theActivity.getPackageName(), sku, "subs",
                                 "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ");
 
-                        if (buyIntentBundle.getInt("RESPONSE_CODE") == 0){
+                        if (buyIntentBundle.getInt("RESPONSE_CODE") == 0) {
+                            System.out.println("Debug - Purchase success");
 
                             System.out.println("buyIntentBundle: BILLING_RESPONSE_RESULT_OK (" +
                                     buyIntentBundle.get("RESPONSE_CODE") + ")");
@@ -297,30 +296,31 @@ public class JavaScriptCommunication extends HybridActivity{
                             System.out.println("pendingIntent: " + pendingIntent);
 
 //                                // TODO: check that this is getting called... should load www.google.com
-                                this.theActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
-                                        new Intent(), Integer.valueOf(0),
-                                        Integer.valueOf(0), Integer.valueOf(0));
+                            this.theActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
+                                    new Intent(), Integer.valueOf(0),
+                                    Integer.valueOf(0), Integer.valueOf(0));
 
 //                                // TODO: check that this is getting called... should load our aws login screen
 //                                startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
 //                                        new Intent(), Integer.valueOf(0),
 //                                        Integer.valueOf(0), Integer.valueOf(0));
 
-                                // TODO: check that this is getting called... should load our aws frugles page after login
+                            // TODO: check that this is getting called... should load our aws frugles page after login
 //                                autoLogin();
 
                         } else {
                             // ERROR making a purchase
                             throw new Exception("ERROR: Purchase failed");
                         }
-
                     }
                 }
+                if (!exists) {
+                    // this means that our product does not exist on our google server
+                    throw new Exception("ERROR: No matching product '" + subID +"'");
+                }
             } else {
-                // ERROR could not make a cunnection to google servers
-                System.out.println("DeBug - ERROR: Cannot connect to google servers.");
-                purchaseError = "true";
-                changeURL(nativeURL);
+                // ERROR could not make a connection to google servers
+                throw new Exception("ERROR: Cannot connect to google servers.");
             }
         } catch (Exception e) {
             // Something else failed somewhere
@@ -339,6 +339,8 @@ public class JavaScriptCommunication extends HybridActivity{
      *      state (i.e., purchased, canceled, or refunded.)
      */
     public void autoLogin() {
+        boolean exists = false;
+
         try {
             System.out.println("Debug - AutoLogin Method");
             // Make the call to play store
@@ -380,6 +382,7 @@ public class JavaScriptCommunication extends HybridActivity{
 
                         // Check if play store product matches our product
                         if (Objects.equals(itemSub, subID)) {
+                            exists = true;
                             String purchaseData = purchaseDataList.get(i).toString();
                             JSONObject purchaseStateOBJ = new JSONObject(purchaseData);
 //                            boolean purchaseState = purchaseStateOBJ.getBoolean("autoRenewing");
@@ -406,10 +409,11 @@ public class JavaScriptCommunication extends HybridActivity{
                                 // Refunded
                                 throw new Exception("Error: Subscription Refunded");
                             }
-                        } else {
-                            // item sku does not match the purchased sku (this should never happen as we only have one purchase item)
-                            throw new Exception("Error: Purchased product doesn't match");
                         }
+                    }
+                    if (!exists) {
+                        // item sku does not match the purchased sku (this should never happen as we only have one purchase item)
+                        throw new Exception("Error: Purchased product doesn't match");
                     }
                 } else {
                     // There have been no products purchased

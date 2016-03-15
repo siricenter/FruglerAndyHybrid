@@ -1,26 +1,11 @@
 package com.myfrugler.frugler2;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
-import android.widget.Toast;
-
-import com.android.vending.billing.IInAppBillingService;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
-import quickconnect.family.json.JSONException;
 
 public class HybridActivity extends AppCompatActivity {
 
